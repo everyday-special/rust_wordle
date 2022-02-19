@@ -9,7 +9,7 @@ pub enum TextColor {
     Green,
     Yellow,
     White,
-    Grey,
+    Black,
 }
 
 #[derive(Debug)]

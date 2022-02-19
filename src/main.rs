@@ -20,12 +20,13 @@ fn main() {
     let colors = sw.check_guess(&guess);
     for (i, col) in colors.iter().enumerate() {
         match col {
-            TextColor::Green => println!("{}", guess.chars().nth(i).unwrap().to_string().green()),
-            TextColor::Yellow => println!("{}", guess.chars().nth(i).unwrap().to_string().yellow()),
-            TextColor::White => println!("{}", guess.chars().nth(i).unwrap().to_string().white()),
-            TextColor::Grey => println!("{}", guess.chars().nth(i).unwrap().to_string().bold())
-,        }
+            TextColor::Green => print!("{}", guess.chars().nth(i).unwrap().to_string().green()),
+            TextColor::Yellow => print!("{}", guess.chars().nth(i).unwrap().to_string().yellow()),
+            TextColor::White => print!("{}", guess.chars().nth(i).unwrap().to_string().white()),
+            TextColor::Black => print!("{}", guess.chars().nth(i).unwrap().to_string().black()),
+        }
     }
+    println!("");
     println!("Allowed: {}", sw.word_allowed(&guess));
     println!("Not allowed: {}", sw.word_allowed(&guess));
 }
