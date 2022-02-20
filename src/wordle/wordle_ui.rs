@@ -44,7 +44,7 @@ impl WordleUI {
     fn get_guess(&self) -> String {
         println!("Please enter a guess: ");
         let mut guess = self.get_input();
-        while !self.word.word_allowed(&guess) {
+        while guess.is_empty() || !self.word.word_allowed(&guess) {
             self.print_guesses();
             println!("Invalid word. Please enter a valid five letter word: ");
             guess = self.get_input();
