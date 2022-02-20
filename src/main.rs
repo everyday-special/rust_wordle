@@ -1,19 +1,11 @@
-use colored::*;
-use std::io;
-
 mod wordle;
 
 use wordle::secret_word::SecretWord;
 use wordle::secret_word::TextColor;
-
-fn get_guess() -> String {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input);
-    input.strip_suffix("\n").unwrap().to_string()
-}
+use wordle::wordle_ui::WordleUI;
 
 fn main() {
-    let sw = SecretWord::new();
+    /*let sw = SecretWord::new();
     sw.print_word();
     let guess = get_guess();
     println!("{}", guess);
@@ -28,5 +20,7 @@ fn main() {
     }
     println!("");
     println!("Allowed: {}", sw.word_allowed(&guess));
-    println!("Not allowed: {}", sw.word_allowed(&guess));
+    println!("Not allowed: {}", sw.word_allowed(&guess));*/
+    let mut ui = WordleUI::new();
+    ui.main();
 }
