@@ -1,7 +1,5 @@
 mod wordle;
 
-use wordle::secret_word::SecretWord;
-use wordle::secret_word::TextColor;
 use wordle::wordle_ui::WordleUI;
 
 fn main() {

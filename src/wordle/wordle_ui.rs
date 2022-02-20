@@ -45,9 +45,9 @@ impl WordleUI {
         println!("Please enter a guess: ");
         let mut guess = self.get_input();
         while !self.word.word_allowed(&guess) {
+            self.print_guesses();
             println!("Invalid word. Please enter a valid five letter word: ");
             guess = self.get_input();
-            println!("");
         }
         guess
     }
@@ -64,19 +64,65 @@ impl WordleUI {
             }
             println!("");
         }
+        self.print_letterbank();
         println!("");
+    }
+
+    fn update_letterbank(&mut self, guess: &String, colors: &Vec<TextColor>) {
+        for (i, ch) in guess.chars().enumerate() {
+            match self.letterbank[&ch] {
+                TextColor::Green => self.letterbank.insert(ch, TextColor::Green),
+                TextColor::Yellow => {
+                    match colors[i] {
+                        TextColor::Green => self.letterbank.insert(ch, TextColor::Green),
+                        _ => self.letterbank.insert(ch, TextColor::Yellow),
+                    }
+                }
+                TextColor::White => {
+                    match colors[i] {
+                        TextColor::White => self.letterbank.insert(ch, TextColor::Black),
+                        TextColor::Green => self.letterbank.insert(ch, TextColor::Green),
+                        TextColor::Yellow => self.letterbank.insert(ch, TextColor::Yellow),
+                        TextColor::Black => self.letterbank.insert(ch, TextColor::Black),
+                    }
+
+                }
+                TextColor::Black => self.letterbank.insert(ch, TextColor::Black),
+            };
+        }
+    }
+
+    fn print_letterbank(&self) {
+        let ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
+        for ch in ascii_lowercase.chars() {
+            match self.letterbank[&ch] {
+                TextColor::Green => print!("{} ", ch.to_string().green()),
+                TextColor::Yellow => print!("{} ", ch.to_string().yellow()),
+                TextColor::White => print!("{} ", ch.to_string().white()),
+                TextColor::Black => print!("{} ", ch.to_string().black()),
+            }
+        }
     }
     
     pub fn main(&mut self) {
-        let mut _score = 0;
-        let _win = false;
+        let mut score = 0;
+        let mut win = false;
         print!("\x1B[2J\x1B[1;1H");
-        for _round in 1..7 {
+        while !win && score < 6 {
+            score += 1;
             let guess = self.get_guess();
             let colors = self.word.check_guess(&guess);
+            win = self.word.is_exact_match(&guess);
+            self.update_letterbank(&guess, &colors);
             &self.scores.push((guess, colors));
             self.print_guesses();
         }
-        println!("End");
+        if win {
+            println!("You win! {}/6", score);
+        }
+        else {
+            print!("You lose! The word was: ");
+            self.word.print_word();
+        }
     }
 }

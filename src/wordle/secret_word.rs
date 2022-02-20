@@ -12,6 +12,7 @@ pub enum TextColor {
     Black,
 }
 
+
 #[derive(Debug)]
 pub struct SecretWord {
     word: String,
@@ -42,6 +43,10 @@ impl SecretWord {
         self.allowed_words.contains(guess)
     }
 
+    pub fn is_exact_match(&self, guess:&String) -> bool {
+        return self.word == *guess;
+    }
+
     pub fn check_guess(&self, guess:&String) -> Vec<TextColor> {
         let mut counts = self.word.chars().collect::<Counter<_>>();
         let mut colors: Vec<TextColor> = vec![TextColor::White, TextColor::White, TextColor::White, TextColor::White, TextColor::White];
@@ -56,7 +61,10 @@ impl SecretWord {
         }
         for (i, ch) in guess.chars().enumerate() {
             if counts.contains_key(&ch) {
-                colors[i] = TextColor::Yellow;
+                match colors[i] {
+                    TextColor::Green => colors[i] = TextColor::Green,
+                    _ => colors[i] = TextColor::Yellow,
+                }
                 counts[&ch] -= 1;
                 if counts[&ch] == 0 {
                     counts.remove(&ch);
