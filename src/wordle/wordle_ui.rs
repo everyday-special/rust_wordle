@@ -108,13 +108,15 @@ impl WordleUI {
         let mut score = 0;
         let mut win = false;
         print!("\x1B[2J\x1B[1;1H");
+        self.print_letterbank();
+        println!("");
         while !win && score < 6 {
             score += 1;
             let guess = self.get_guess();
             let colors = self.word.check_guess(&guess);
             win = self.word.is_exact_match(&guess);
             self.update_letterbank(&guess, &colors);
-            &self.scores.push((guess, colors));
+            let _ = &self.scores.push((guess, colors));
             self.print_guesses();
         }
         if win {
