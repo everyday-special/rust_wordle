@@ -70,25 +70,15 @@ impl WordleUI {
 
     fn update_letterbank(&mut self, guess: &String, colors: &Vec<TextColor>) {
         for (i, ch) in guess.chars().enumerate() {
-            match self.letterbank[&ch] {
-                TextColor::Green => self.letterbank.insert(ch, TextColor::Green),
-                TextColor::Yellow => {
-                    match colors[i] {
-                        TextColor::Green => self.letterbank.insert(ch, TextColor::Green),
-                        _ => self.letterbank.insert(ch, TextColor::Yellow),
-                    }
-                }
-                TextColor::White => {
-                    match colors[i] {
-                        TextColor::White => self.letterbank.insert(ch, TextColor::Black),
-                        TextColor::Green => self.letterbank.insert(ch, TextColor::Green),
-                        TextColor::Yellow => self.letterbank.insert(ch, TextColor::Yellow),
-                        TextColor::Black => self.letterbank.insert(ch, TextColor::Black),
-                    }
-
-                }
-                TextColor::Black => self.letterbank.insert(ch, TextColor::Black),
-            };
+            if self.letterbank[&ch] == TextColor::White && (colors[i] == TextColor::Yellow || colors[i] == TextColor::Green) {
+                self.letterbank.insert(ch, colors[i]);
+            }
+            else if self.letterbank[&ch] == TextColor::Yellow && colors[i] == TextColor::Green {
+                self.letterbank.insert(ch, colors[i]);
+            }
+            else if self.letterbank[&ch] == TextColor::White && colors[i] == TextColor::White {
+                self.letterbank.insert(ch, TextColor::Black);
+            }
         }
     }
 

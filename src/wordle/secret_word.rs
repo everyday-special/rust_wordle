@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use counter::Counter;
 use rand::seq::SliceRandom;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TextColor {
     Green,
     Yellow,
