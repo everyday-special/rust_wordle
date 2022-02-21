@@ -1,17 +1,15 @@
-use std::fs;
 use std::collections::HashSet;
 
-use rand::seq::SliceRandom;
 use counter::Counter;
+use rand::seq::SliceRandom;
 
-
+#[derive(Debug, PartialEq, Eq)]
 pub enum TextColor {
     Green,
     Yellow,
     White,
     Black,
 }
-
 
 #[derive(Debug)]
 pub struct SecretWord {
@@ -21,17 +19,19 @@ pub struct SecretWord {
 
 impl SecretWord {
     pub fn new() -> Self {
-        let mut contents = fs::read_to_string("word_list.txt")
-            .expect("Something went wrong when reading the secret word file.");
-        let secret_words: Vec<String> = contents.split("\n").map(|word| String::from(word)).collect();
-
-        contents = fs::read_to_string("allowed_guesses.txt")
-            .expect("Something went wrong when reading the allowed guesses file.");
-        let valid_guesses: Vec<String> = contents.split("\n").map(|word| String::from(word)).collect();
+        let contents = include_str!("../../word_list.txt");
+        let secret_words: Vec<String> = contents.split("\n").map(String::from).collect();
+        let allowed_words = include_str!("../../allowed_guesses.txt")
+            .split("\n")
+            .map(String::from)
+            .collect::<HashSet<String>>();
 
         Self {
-            word: secret_words.choose(&mut rand::thread_rng()).unwrap().to_string(),
-            allowed_words: HashSet::from_iter(valid_guesses.iter().map(|word| word.to_string())),
+            word: secret_words
+                .choose(&mut rand::thread_rng())
+                .unwrap()
+                .to_string(),
+            allowed_words,
         }
     }
 
@@ -39,17 +39,23 @@ impl SecretWord {
         println!("{}", self.word);
     }
 
-    pub fn word_allowed(&self, guess:&String) -> bool {
+    pub fn word_allowed(&self, guess: &String) -> bool {
         self.allowed_words.contains(guess)
     }
 
-    pub fn is_exact_match(&self, guess:&String) -> bool {
+    pub fn is_exact_match(&self, guess: &String) -> bool {
         return self.word == *guess;
     }
 
     pub fn check_guess(&self, guess:&String) -> Vec<TextColor> {
         let mut counts = self.word.chars().collect::<Counter<_>>();
-        let mut colors: Vec<TextColor> = vec![TextColor::White, TextColor::White, TextColor::White, TextColor::White, TextColor::White];
+        let mut colors: Vec<TextColor> = vec![
+            TextColor::White,
+            TextColor::White, 
+            TextColor::White,
+            TextColor::White,
+            TextColor::White
+        ];
         for (i, ch) in guess.chars().enumerate() {
             if ch == self.word.chars().nth(i).unwrap() {
                 colors[i] = TextColor::Green;
